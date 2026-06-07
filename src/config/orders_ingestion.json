@@ -1,0 +1,25 @@
+{
+  "source": {
+    "path": "abfss://landing@storage.dfs.core.windows.net/orders/",
+    "format": "json"
+  },
+  "target": {
+    "table": "dev.bronze.orders"
+  },
+  "audit": {
+    "table": "dev.silver.ingestion_audit"
+  },
+  "streaming": {
+    "checkpoint_path": "abfss://checkpoint@storage.dfs.core.windows.net/orders/checkpoint",
+    "schema_location": "abfss://checkpoint@storage.dfs.core.windows.net/orders/schema",
+    "schema_evolution_mode": "addNewColumns",
+    "trigger_interval": "5 minutes"
+  },
+  "metadata_columns": {
+    "ingestion_timestamp": true,
+    "source_file_name": true,
+    "load_date": true,
+    "run_id": true,
+    "_rescued_data": true
+  }
+}

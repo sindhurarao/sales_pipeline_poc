@@ -1,0 +1,26 @@
+{
+  "source": {
+    "path": "abfss://raw@datalake.dfs.core.windows.net/customer/",
+    "format": "CSV"
+  },
+  "target": {
+    "table": "dev.bronze.customer"
+  },
+  "audit": {
+    "table": "dev.silver.ingestion_audit"
+  },
+  "format_options": {
+    "header": "true",
+    "inferSchema": "true"
+  },
+  "copy_options": {
+    "mergeSchema": "true"
+  },
+  "metadata_columns": {
+    "ingestion_timestamp": true,
+    "source_file_name": true,
+    "load_date": true,
+    "run_id": true,
+    "_rescued_data": true
+  }
+}
