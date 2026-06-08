@@ -166,6 +166,21 @@ No code changes are required for onboarding new datasets.
 
 ---
 
+## Notebook Schedule
+
+| Notebook          | Schedule        | Justification                                                                                      |
+| ----------------- | --------------- | -------------------------------------------------------------------------------------------------- |
+| `bronze_customer` | On File Arrival | Reference data that changes infrequently and should be ingested when new files are received.       |
+| `bronze_orders`   | Auto Loaded     | Core transactional dataset requiring immediate ingestion upon arrival.                             |
+| `bronze_products` | On File Arrival | Reference data that changes infrequently and should be ingested when new files are received.       |
+| `silver_customer` | Daily           | Customer dimension data refreshed daily to support analytical reporting and yearly trend analysis. |
+| `silver_orders`   | Hourly          | High-volume transactional data requiring frequent processing to keep downstream datasets current.  |
+| `silver_products` | Daily           | Product dimension data refreshed daily to support analytical reporting and yearly trend analysis.  |
+| `silver_sales`    | Daily           | Sales fact dataset refreshed daily to support analytical reporting and yearly trend analysis.      |
+| `gold_aggregate`  | View            | Aggregated reporting layer generated on demand from silver data for analytical consumption.        |
+
+
+---
 ## Testing
 
 Unit tests cover:
