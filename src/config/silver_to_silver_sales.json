@@ -1,0 +1,66 @@
+{
+  "ingestion_type": "table",
+  "source": {
+    "table": "dev.silver_orders",
+    "alias": "o"
+  },
+  "joins": [
+    {
+      "type": "broadcast",
+      "join_type": "left",
+      "table": "dev.silver_dim_customer",
+      "alias": "c",
+      "condition": "o.customer_id = c.customer_id AND c.current_flag = true"
+    },
+    {
+      "type": "broadcast",
+      "join_type": "left",
+      "table": "dev.silver_dim_product",
+      "alias": "p",
+      "condition": "o.product_id = p.product_id"
+    }
+  ],
+  "validation": {
+    "enabled": true,
+    "rules_table": "silver.sales_master_rules",
+    "quarantine_table": "silver.sales_master_quarantine"
+  },
+  "transformations": [
+    {
+      "type": "expression",
+      "target_column": "sales_amount",
+      "expression": "round(quantity * price * (1-discount),2)"
+    },
+    {
+      "type": "expression",
+      "target_column": "order_year",
+      "expression": "year(order_date)"
+    },
+    {
+      "type": "expression",
+      "target_column": "order_month",
+      "expression": "month(order_date)"
+    },
+    {
+      "type": "expression",
+      "target_column": "order_quarter",
+      "expression": "quarter(order_date)"
+    },
+    {
+      "type": "expression",
+      "target_column": "load_date",
+      "expression": "current_date()"
+    }
+  ],
+  "target": {
+    "table": "dev.silver_sales"
+  },
+  "write_options": {
+    "mode": "merge",
+    "mergeSchema": "true",
+    "mergeKeys": ["row_id"]
+  },
+  "audit": {
+    "table": "dev.silver.ingestion_audit"
+  }
+}

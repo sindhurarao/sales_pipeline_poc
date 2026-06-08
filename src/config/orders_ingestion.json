@@ -1,6 +1,7 @@
 {
+  "ingestion_type": "auto_load",
   "source": {
-    "path": "abfss://landing@storage.dfs.core.windows.net/orders/",
+    "path": "dbfs:/Volumes/sandbox/default/sales/orders.json",
     "format": "json"
   },
   "target": {

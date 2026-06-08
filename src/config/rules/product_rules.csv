@@ -1,0 +1,8 @@
+field_name,datatype,ruletype,format,action,rule_params
+product_id,string,not_null,,quarantine,
+product_id,string,duplicate_key,,quarantine,
+product_id,string,conflicting_key,,quarantine,"product_name,category,sub_category"
+product_name,string,not_null,UNKNOWN PRODUCT,clean,
+product_name,string,case,title,clean,
+category,string,case,title,clean,
+sub_category,string,case,title,clean,

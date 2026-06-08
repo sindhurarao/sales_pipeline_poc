@@ -8,7 +8,6 @@ class BaseReader(ABC):
             source_path,
             options=None
     ):
-
         self.spark = spark
         self.source_path = source_path
         self.options = options or {}

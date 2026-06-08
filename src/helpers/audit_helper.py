@@ -18,11 +18,7 @@ class AuditLogger:
             error_message=None
     ):
 
-        escaped_error = (
-            error_message.replace("'", "''")
-            if error_message
-            else None
-        )
+        escaped_error = (error_message.replace("'", "''") if error_message else None)
 
         self.spark.sql(f"""
         INSERT INTO {self.audit_table}

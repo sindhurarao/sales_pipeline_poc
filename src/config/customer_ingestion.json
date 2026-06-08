@@ -1,7 +1,8 @@
 {
+  "ingestion_type": "load_file",
   "source": {
-    "path": "abfss://raw@datalake.dfs.core.windows.net/customer/",
-    "format": "CSV"
+    "path": "dbfs:/Volumes/sandbox/default/sales/Customer.xlsx",
+    "format": "EXCEL"
   },
   "target": {
     "table": "dev.bronze.customer"

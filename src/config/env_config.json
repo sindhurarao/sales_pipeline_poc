@@ -1,0 +1,91 @@
+{
+  "environment": "dev",
+
+  "dev": {
+    "catalog": "dev",
+    "bronze_schema": "bronze",
+    "silver_schema": "silver",
+    "gold_schema": "gold",
+
+    "storage_account": "adlsdev",
+    "container": "datalake",
+
+    "audit_table": "dev.admin.ingestion_audit",
+    "rules_table": "dev.admin.validation_rules",
+    "quarantine_table": "dev.admin.quarantine_records",
+
+    "freshness_threshold_hours": 24,
+
+    "write_options": {
+      "mergeSchema": true,
+      "optimizeWrite": true,
+      "autoCompact": true
+    }
+  },
+
+  "sit": {
+    "catalog": "sit",
+    "bronze_schema": "bronze",
+    "silver_schema": "silver",
+    "gold_schema": "gold",
+
+    "storage_account": "adlssit",
+    "container": "datalake",
+
+    "audit_table": "sit.admin.ingestion_audit",
+    "rules_table": "sit.admin.validation_rules",
+    "quarantine_table": "sit.admin.quarantine_records",
+
+    "freshness_threshold_hours": 24,
+
+    "write_options": {
+      "mergeSchema": true,
+      "optimizeWrite": true,
+      "autoCompact": true
+    }
+  },
+
+  "uat": {
+    "catalog": "uat",
+    "bronze_schema": "bronze",
+    "silver_schema": "silver",
+    "gold_schema": "gold",
+
+    "storage_account": "adlsuat",
+    "container": "datalake",
+
+    "audit_table": "uat.admin.ingestion_audit",
+    "rules_table": "uat.admin.validation_rules",
+    "quarantine_table": "uat.admin.quarantine_records",
+
+    "freshness_threshold_hours": 48,
+
+    "write_options": {
+      "mergeSchema": true,
+      "optimizeWrite": true,
+      "autoCompact": true
+    }
+  },
+
+  "prod": {
+    "catalog": "prod",
+    "bronze_schema": "bronze",
+    "silver_schema": "silver",
+    "gold_schema": "gold",
+
+    "storage_account": "adlsprod",
+    "container": "datalake",
+
+    "audit_table": "prod.admin.ingestion_audit",
+    "rules_table": "prod.admin.validation_rules",
+    "quarantine_table": "prod.admin.quarantine_records",
+
+    "freshness_threshold_hours": 1,
+
+    "write_options": {
+      "mergeSchema": false,
+      "optimizeWrite": true,
+      "autoCompact": true
+    }
+  }
+}

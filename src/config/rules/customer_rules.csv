@@ -1,0 +1,5 @@
+field_name,datatype,ruletype,format,action,rule_params
+customer_id,string,not_null,,quarantine,
+customer_name,string,not_null,UNKNOWN CUSTOMER,clean,
+customer_name,string,regex,"[^A-Za-z .'-]",clean,
+customer_name,string,case,title,clean,

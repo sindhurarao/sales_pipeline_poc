@@ -1,0 +1,86 @@
+{
+  "pre_processing": {
+    "freshness_check": {
+      "enabled": true,
+      "timestamp_column": "ingestion_timestamp",
+      "max_delay_hours": 24,
+      "fail_on_stale_data": true
+    },
+    "deduplication": {
+      "enabled": true,
+      "keys": ["row_id"],
+      "order_by": [
+        {
+          "column": "ingestion_timestamp",
+          "direction": "desc"
+        }
+      ],
+      "strategy": "row_number",
+      "keep": "latest"
+    }
+  },
+  "ingestion_type": "table",
+  "source": {
+    "table": "bronze.bronze_orders"
+  },
+  "validation": {
+    "enabled": true,
+    "rules_table": "silver.order_rules",
+    "quarantine_table": "silver.order_quarantine"
+  },
+  "transformations": [
+    {
+      "type": "expression",
+      "target_column": "order_date",
+      "expression": "to_date(order_date, 'd/M/yyyy')"
+    },
+    {
+      "type": "expression",
+      "target_column": "ship_date",
+      "expression": "to_date(ship_date, 'd/M/yyyy')"
+    },
+    {
+      "type": "expression",
+      "target_column": "order_year",
+      "expression": "year(order_date)"
+    },
+    {
+      "type": "expression",
+      "target_column": "order_month",
+      "expression": "month(order_date)"
+    },
+    {
+      "type": "expression",
+      "target_column": "order_quarter",
+      "expression": "quarter(order_date)"
+    },
+    {
+      "type": "round",
+      "columns": [
+        {
+          "column": "price",
+          "scale": 2
+        },
+        {
+          "column": "discount",
+          "scale": 2
+        },
+        {
+          "column": "profit",
+          "scale": 2
+        }
+      ]
+    }
+  ],
+  "target": {
+    "table": "dev.silver_orders"
+  },
+  "write_options": {
+    "mode": "merge",
+    "mergeSchema": "true",
+    "mergeKeys": ["row_id"]
+  },
+  "audit": {
+    "table": "dev.silver.ingestion_audit"
+  }
+}

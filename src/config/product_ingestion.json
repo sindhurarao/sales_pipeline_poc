@@ -1,7 +1,8 @@
 {
+  "ingestion_type": "load_file",
   "source": {
-    "path": "abfss://raw@storage.dfs.core.windows.net/products/products.xlsx",
-    "format": "EXCEL"
+    "path": "dbfs:/Volumes/sandbox/default/sales/products.csv",
+    "format": "CSV"
   },
   "target": {
     "table": "dev.bronze.products"

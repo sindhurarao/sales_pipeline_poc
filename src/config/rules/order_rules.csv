@@ -1,0 +1,12 @@
+field_name,datatype,ruletype,format,action,rule_params
+order_id,string,not_null,,quarantine,
+customer_id,string,not_null,,quarantine,
+product_id,string,not_null,,quarantine,
+product_id,string,ref_integrity,quarantine,silver_dim_product.product_id
+customer_id,string,ref_integrity,quarantine,silver_dim_customer.customer_id
+order_date,date,date_format,d/M/yyyy,clean,
+ship_date,date,date_format,d/M/yyyy,clean,
+quantity,integer,min,1,quarantine,
+price,decimal,precision,"18,2",clean,
+discount,decimal,range,"0,1",quarantine,
+profit,decimal,precision,"18,2",clean,

@@ -1,0 +1,58 @@
+{
+  "pre_processing": {
+    "freshness_check": {
+      "enabled": true,
+      "timestamp_column": "ingestion_timestamp",
+      "max_delay_hours": 24,
+      "fail_on_stale_data": true
+    },
+    "deduplication": {
+      "enabled": true,
+      "keys": ["product_id"],
+      "order_by": [
+        {
+          "column": "ingestion_timestamp",
+          "direction": "desc"
+        }
+      ],
+      "strategy": "row_number",
+      "keep": "latest"
+    }
+  },
+  "ingestion_type": "table",
+  "source": {
+    "table": "bronze.bronze_products"
+  },
+  "validation": {
+    "enabled": true,
+    "rules_table": "silver.product_rules",
+    "quarantine_table": "silver.product_quarantine"
+  },
+  "transformations": [
+    {
+      "type": "rename",
+      "source_column": "price_per_product",
+      "target_column": "standard_price"
+    },
+    {
+      "type": "round",
+      "columns": [
+        {
+          "column": "standard_price",
+          "scale": 2
+        }
+      ]
+    }
+  ],
+  "target": {
+    "table": "dev.silver_dim_product"
+  },
+  "write_options": {
+    "mode": "merge",
+    "mergeSchema": "true",
+    "mergeKeys": ["product_id"]
+  },
+  "audit": {
+    "table": "dev.silver.ingestion_audit"
+  }
+}

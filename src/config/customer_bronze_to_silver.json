@@ -1,0 +1,66 @@
+{
+  "pre_processing": {
+    "freshness_check": {
+      "enabled": true,
+      "timestamp_column": "ingestion_timestamp",
+      "max_delay_hours": 24,
+      "fail_on_stale_data": true
+    },
+    "deduplication": {
+      "enabled": true,
+      "keys": ["customer_id"],
+      "order_by": [
+        {
+          "column": "ingestion_timestamp",
+          "direction": "desc"
+        }
+      ],
+      "strategy": "row_number",
+      "keep": "latest"
+    }
+  },
+  "ingestion_type": "table",
+  "source": {
+    "table": "bronze.bronze_customers"
+  },
+  "validation": {
+    "enabled": true,
+    "rules_table": "silver.customer_rules",
+    "quarantine_table": "silver.customer_quarantine"
+  },
+  "transformations": [
+    {
+      "type": "rename",
+      "source_column": "name",
+      "target_column": "customer_name"
+    },
+    {
+      "type": "expression",
+      "target_column": "effective_date",
+      "expression": "current_date()"
+    },
+    {
+      "type": "expression",
+      "target_column": "expiry_date",
+      "expression": "CAST('9999-12-31' AS DATE)"
+    },
+    {
+      "type": "expression",
+      "target_column": "current_flag",
+      "expression": "true"
+    }
+  ],
+  "target": {
+    "table": "dev.silver_dim_customer"
+  },
+  "write_options": {
+    "mode": "merge",
+    "mergeSchema": "true",
+    "mergeKeys": [
+      "customer_id"
+    ]
+  },
+  "audit": {
+    "table": "dev.silver.ingestion_audit"
+  }
+}
