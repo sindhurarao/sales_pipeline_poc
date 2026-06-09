@@ -3,6 +3,7 @@ import sys
 import pytest
 from unittest.mock import MagicMock
 from pyspark.sql import SparkSession
+from helpers.validation_helper import ValidationHelper
 
 # To import modules from src package, setting path to .../sales_pipeline_poc/src
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
@@ -19,6 +20,10 @@ def spark():
     )
     yield session
     session.stop()
+
+@pytest.fixture(scope="function")
+def mock_spark():
+    return MagicMock()
 
 @pytest.fixture(scope="function")
 def sample_df(spark):

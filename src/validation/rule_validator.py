@@ -1,4 +1,6 @@
 from pyspark.sql import functions as F
+
+from tests.conftest import spark
 from validation.validation_factory import ValidationFactory
 
 class RuleValidator:

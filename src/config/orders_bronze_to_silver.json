@@ -21,7 +21,7 @@
   },
   "ingestion_type": "table",
   "source": {
-    "table": "bronze.bronze_orders"
+    "table": "dev.bronze_orders"
   },
   "validation": {
     "enabled": true,
@@ -56,20 +56,8 @@
     },
     {
       "type": "round",
-      "columns": [
-        {
-          "column": "price",
-          "scale": 2
-        },
-        {
-          "column": "discount",
-          "scale": 2
-        },
-        {
-          "column": "profit",
-          "scale": 2
-        }
-      ]
+      "target_column": "profit",
+      "scale": 2
     }
   ],
   "target": {
@@ -81,6 +69,6 @@
     "mergeKeys": ["row_id"]
   },
   "audit": {
-    "table": "dev.silver.ingestion_audit"
+    "table": "dev.silver_ingestion_audit"
   }
 }

@@ -5,10 +5,10 @@
     "format": "CSV"
   },
   "target": {
-    "table": "dev.bronze.products"
+    "table": "dev.bronze_products"
   },
   "audit": {
-    "table": "dev.silver.ingestion_audit"
+    "table": "dev.silver_ingestion_audit"
   },
   "format_options": {
     "sheetName": "Products",

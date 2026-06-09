@@ -5,10 +5,10 @@ def test_build_copy_into_sql_with_options():
         {"header": "true"},
         {"force": "false"},
         "/mnt/source",
-        "bronze.orders",
+        "bronze_orders",
         "CSV",
     )
-    assert "COPY INTO bronze.orders" in sql
+    assert "COPY INTO bronze_orders" in sql
     assert "FROM '/mnt/source'" in sql
     assert "FILE_FORMAT = 'CSV'" in sql
     assert "FORMAT_OPTIONS" in sql
@@ -18,6 +18,6 @@ def test_build_copy_into_sql_with_options():
 
 def test_build_copy_into_sql_without_options():
     sql = build_copy_into_sql({}, {}, "/mnt/source",
-                              "bronze.orders", "CSV")
+                              "bronze_orders", "CSV")
     assert "FORMAT_OPTIONS" not in sql
     assert "COPY_OPTIONS" not in sql

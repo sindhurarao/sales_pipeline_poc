@@ -9,7 +9,7 @@ class WriterAdapter:
             df.write.mode(mode).format("delta").saveAsTable(table_name)
 
     def write(self, df, target, write_options):
-        mode = write_options["mode"]
+        mode = write_options.get("mode", "append")
         if mode == "append":
             df.write.mode("append").format("delta").saveAsTable(target["table"])
         elif mode == "overwrite":

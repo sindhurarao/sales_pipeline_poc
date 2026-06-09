@@ -9,20 +9,20 @@ from helpers.audit_helper import AuditLogger
 from helpers.validation_helper import ValidationHelper
 from helpers.metadata_helper import MetadataHelper
 
-def run(spark, config):
+def run(spark, config, dbutils):
 
     source_path = config["source"]["path"]
     file_format = config["source"]["format"]
     target_table = config["target"]["table"]
     audit_table = config["audit"]["table"]
-    read_options = config.get("read_options",{})
+    read_options = config.get("format_options",{})
     write_options = config.get("write_options",{})
     metadata_config = config.get("metadata_columns",{})
 
     run_id = str(uuid.uuid4())
     start_time = datetime.now()
     audit = AuditLogger(spark=spark, audit_table=audit_table)
-    validator = ValidationHelper(spark)
+    validator = ValidationHelper(spark, dbutils)
     logger = logging.getLogger("load_file_to_bronze")
 
     if not logger.handlers:

@@ -21,7 +21,7 @@
   },
   "ingestion_type": "table",
   "source": {
-    "table": "bronze.bronze_customers"
+    "table": "dev.bronze_customers"
   },
   "validation": {
     "enabled": true,
@@ -61,6 +61,6 @@
     ]
   },
   "audit": {
-    "table": "dev.silver.ingestion_audit"
+    "table": "dev.silver_ingestion_audit"
   }
 }

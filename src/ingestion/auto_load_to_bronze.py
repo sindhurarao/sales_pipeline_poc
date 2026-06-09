@@ -58,7 +58,7 @@ def process_batch(batch_df,
         )
         raise
 
-def run(spark, config):
+def run(spark, config, dbutils):
 
     source_path = config["source"]["path"]
     source_format = config["source"]["format"].lower()
@@ -72,7 +72,7 @@ def run(spark, config):
     run_id = str(uuid.uuid4())
     start_time = datetime.now()
     audit = AuditLogger(spark=spark, audit_table=audit_table)
-    validator = ValidationHelper(spark)
+    validator = ValidationHelper(spark, dbutils)
 
     logger = logging.getLogger("auto_load_to_bronze")
     if not logger.handlers:
@@ -112,11 +112,11 @@ def run(spark, config):
     stream_df = (stream
                 .withColumn(
                     "ingestion_timestamp",
-                    start_time
+                    current_timestamp()
                 )
                 .withColumn(
                     "source_file_name",
-                    source_path
+                    lit(source_path)
                 )
                 .withColumn(
                     "run_id",
@@ -130,7 +130,17 @@ def run(spark, config):
 
     query = (
         stream_df.writeStream
-        .foreachBatch(process_batch(logger,audit,run_id,source_path,target_table))
+        .foreachBatch(
+            lambda batch_df, batch_id: process_batch(
+                batch_df,
+                batch_id,
+                logger,
+                audit,
+                run_id,
+                source_path,
+                target_table,
+            )
+        )
         .option(
             "checkpointLocation",
             checkpoint_path

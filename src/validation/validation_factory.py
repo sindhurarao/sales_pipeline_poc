@@ -11,7 +11,7 @@ class ValidationFactory:
     }
 
     @classmethod
-    def create(cls, rule):
+    def create(cls, rule, Spark=None):
         strategy = cls.STRATEGIES.get(rule["ruletype"])
         if not strategy:
             raise ValueError(f"Unsupported validation rule: {rule['ruletype']}")

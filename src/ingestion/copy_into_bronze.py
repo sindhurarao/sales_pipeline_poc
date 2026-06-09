@@ -27,7 +27,7 @@ def build_copy_into_sql(format_options, copy_options, source_path, target_table,
         """
     return sql
 
-def run(spark, config):
+def run(spark, config, dbutils):
 
     source_path = config["source"]["path"]
     file_format = config["source"]["format"].upper()
@@ -39,7 +39,7 @@ def run(spark, config):
     run_id = str(uuid.uuid4())
     start_time = datetime.now()
     audit = AuditLogger(spark=spark, audit_table=audit_table)
-    validator = ValidationHelper(spark)
+    validator = ValidationHelper(spark, dbutils)
     logger = logging.getLogger("copy_into_bronze")
 
     if not logger.handlers:

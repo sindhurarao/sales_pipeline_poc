@@ -61,6 +61,6 @@
     "mergeKeys": ["row_id"]
   },
   "audit": {
-    "table": "dev.silver.ingestion_audit"
+    "table": "dev.silver_ingestion_audit"
   }
 }

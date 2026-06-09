@@ -21,7 +21,7 @@
   },
   "ingestion_type": "table",
   "source": {
-    "table": "bronze.bronze_products"
+    "table": "dev.bronze_products"
   },
   "validation": {
     "enabled": true,
@@ -33,15 +33,6 @@
       "type": "rename",
       "source_column": "price_per_product",
       "target_column": "standard_price"
-    },
-    {
-      "type": "round",
-      "columns": [
-        {
-          "column": "standard_price",
-          "scale": 2
-        }
-      ]
     }
   ],
   "target": {

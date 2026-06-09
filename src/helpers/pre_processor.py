@@ -1,11 +1,12 @@
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
 from pyspark.sql.window import Window
+from datetime import datetime, timezone
 
 class FreshnessCheckFailed(Exception):
     pass
 
-def apply_pre_processing(df: DataFrame, config: dict, spark=None) -> DataFrame:
+def apply_pre_processing(df: DataFrame, config: dict) -> DataFrame:
     pre_processing = config.get("pre_processing", {})
     if not pre_processing:
         return df
@@ -32,17 +33,7 @@ def perform_freshness_check(df: DataFrame, config: dict):
         raise FreshnessCheckFailed(
             f"No value found in column '{timestamp_column}'"
         )
-    age_hours = (
-        spark.sql(
-            f"""
-            SELECT (
-                unix_timestamp(current_timestamp()) -
-                unix_timestamp(TIMESTAMP('{max_timestamp}'))
-            ) / 3600 AS age_hours
-            """
-        )
-        .collect()[0]["age_hours"]
-    )
+    age_hours = (datetime.now() - max_timestamp).total_seconds() / 3600
     if age_hours > max_delay_hours:
         message = (
             f"Freshness check failed. "
