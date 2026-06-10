@@ -14,7 +14,7 @@
     "header": "true",
     "inferSchema": "true"
   },
-  "copy_options": {
+  "write_options": {
     "mergeSchema": "true"
   },
   "metadata_columns": {

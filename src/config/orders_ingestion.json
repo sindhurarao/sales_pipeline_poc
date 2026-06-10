@@ -10,7 +10,7 @@
   "audit": {
     "table": "dev.silver_ingestion_audit"
   },
-  "copy_options": {
+  "write_options": {
     "mergeSchema": "true"
   },
   "metadata_columns": {
