@@ -1,7 +1,5 @@
 class ValidationHelper:
-
-    class ValidationHelper:
-        def __init__(self, spark, dbutils):
+    def __init__(self, spark, dbutils):
             self.spark = spark
             self.dbutils = dbutils
 
