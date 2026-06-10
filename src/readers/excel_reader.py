@@ -8,6 +8,6 @@ class ExcelReader(BaseReader):
             reader = reader.option(key,value)
         return (
             reader
-            .format("com.crealytics.spark.excel")
+            .format("excel")
             .load(self.source_path)
         )

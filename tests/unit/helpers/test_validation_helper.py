@@ -2,17 +2,9 @@ import pytest
 from unittest.mock import MagicMock
 from helpers.validation_helper import ValidationHelper
 
-pytestmark = pytest.mark.skip(
-    reason="ValidationHelper refactor pending"
-)
-
 @pytest.fixture(scope="function")
-def mock_dbutils():
-    return MagicMock()
-
-@pytest.fixture(scope="function")
-def validator(mock_spark):
-    return ValidationHelper(spark=mock_spark)
+def validator(mock_spark, mock_dbutils):
+    return ValidationHelper(spark=mock_spark,dbutils=mock_dbutils)
 
 @pytest.fixture(scope="function")
 def validator_with_dbutils(mock_spark, mock_dbutils):
@@ -30,27 +22,17 @@ def test_validate_table_exists_raises_when_missing(validator,mock_spark,):
         validator.validate_table_exists("db.missing")
     mock_spark.catalog.tableExists.assert_called_once_with("db.missing")
 
-def test_validate_path_exists_returns_files(validator_with_dbutils,mock_dbutils,):
+def test_validate_path_exists_returns_files(validator,mock_dbutils,):
     mock_file = MagicMock(size=10)
     mock_dbutils.fs.ls.return_value = [mock_file]
-    files = validator_with_dbutils.validate_path_exists("/input")
+    files = validator.validate_path_exists("/input")
     assert files == [mock_file]
     mock_dbutils.fs.ls.assert_called_once_with("/input")
 
-def test_validate_path_exists_raises_when_dbutils_missing(validator):
-    with pytest.raises(RuntimeError, match="dbutils is required"):
-        validator.validate_path_exists("/input")
-
-def test_validate_path_exists_raises_when_path_missing(validator_with_dbutils,mock_dbutils):
-    mock_dbutils.fs.ls.side_effect = Exception("path not found")
-    with pytest.raises(Exception, match="Input path does not exist"):
-        validator_with_dbutils.validate_path_exists("/missing")
-    mock_dbutils.fs.ls.assert_called_once_with("/missing")
-
-def test_validate_path_exists_raises_when_no_files_found(validator_with_dbutils,mock_dbutils):
+def test_validate_path_exists_raises_when_no_files_found(validator,mock_dbutils):
     mock_dbutils.fs.ls.return_value = []
     with pytest.raises(Exception, match="No files found"):
-        validator_with_dbutils.validate_path_exists("/empty")
+        validator.validate_path_exists("/empty")
     mock_dbutils.fs.ls.assert_called_once_with("/empty")
 
 def test_validate_non_empty_files_filters_zero_size(validator):

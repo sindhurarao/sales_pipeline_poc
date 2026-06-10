@@ -51,7 +51,8 @@ def run(spark, config, dbutils):
         enriched_df = MetadataHelper.enrich(
             source_df,
             metadata_config,
-            run_id
+            run_id,
+            source_path
         )
         record_count = enriched_df.count()
 

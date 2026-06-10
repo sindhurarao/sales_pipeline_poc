@@ -3,7 +3,6 @@ import sys
 import pytest
 from unittest.mock import MagicMock
 from pyspark.sql import SparkSession
-from helpers.validation_helper import ValidationHelper
 
 # To import modules from src package, setting path to .../sales_pipeline_poc/src
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
@@ -47,3 +46,7 @@ def mock_writer_chain():
     writer.mode.return_value = writer
     writer.option.return_value = writer
     return writer
+
+@pytest.fixture(scope="function")
+def mock_dbutils():
+    return MagicMock()

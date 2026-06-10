@@ -26,10 +26,10 @@ from helpers.metadata_helper import MetadataHelper
     ],
 )
 def test_metadata_enrich_adds_expected_columns(sample_df, metadata_config, expected_columns):
-    result = MetadataHelper.enrich(sample_df, metadata_config, "test_run")
+    result = MetadataHelper.enrich(sample_df, metadata_config, "test_run","")
     assert expected_columns.issubset(set(result.columns))
 
 
 def test_metadata_enrich_sets_run_id(sample_df):
-    result = MetadataHelper.enrich(sample_df, {"run_id": True}, "test_run")
+    result = MetadataHelper.enrich(sample_df, {"run_id": True}, "test_run","")
     assert result.select("run_id").first()["run_id"] == "test_run"
