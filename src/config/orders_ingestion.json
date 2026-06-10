@@ -17,7 +17,6 @@
     "ingestion_timestamp": true,
     "source_file_name": true,
     "load_date": true,
-    "run_id": true,
-    "_rescued_data": true
+    "run_id": true
   }
 }
