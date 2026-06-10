@@ -10,11 +10,8 @@
   "audit": {
     "table": "dev.silver_ingestion_audit"
   },
-  "streaming": {
-    "checkpoint_path": "abfss://checkpoint@storage.dfs.core.windows.net/orders/checkpoint",
-    "schema_location": "abfss://checkpoint@storage.dfs.core.windows.net/orders/schema",
-    "schema_evolution_mode": "addNewColumns",
-    "trigger_interval": "5 minutes"
+  "copy_options": {
+    "mergeSchema": "true"
   },
   "metadata_columns": {
     "ingestion_timestamp": true,
