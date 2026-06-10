@@ -16,6 +16,12 @@ class WriterAdapter:
             df.write.mode("overwrite").format("delta").saveAsTable(target["table"])
         elif mode == "merge":
             self.merge(df, target["table"], write_options["mergeKeys"])
+        elif mode == "scd2_merge":
+            self.scd2_merge(
+                df,
+                target["table"],
+                write_options
+            )
         else:
             raise ValueError(f"Unsupported write mode: {mode}")
 
@@ -31,4 +37,115 @@ class WriterAdapter:
             .whenMatchedUpdateAll()
             .whenNotMatchedInsertAll()
             .execute()
+        )
+
+    def scd2_merge(
+            self,
+            df,
+            table_name,
+            options
+    ):
+
+        business_keys = options["businessKeys"]
+        change_columns = options["changeColumns"]
+
+        effective_col = options.get("effectiveDateColumn","effective_date")
+        expiry_col = options.get("expiryDateColumn","expiry_date")
+        current_col = options.get("currentFlagColumn","current_flag")
+        active_expiry = options.get("activeExpiryDate","9999-12-31")
+
+        delta_table = DeltaTable.forName(self.spark,table_name)
+
+        merge_condition = " AND ".join(
+            [
+                f"target.{k}=source.{k}"
+                for k in business_keys
+            ]
+            + [f"target.{current_col}=true"]
+        )
+
+        change_condition = " OR ".join(
+            [
+                f"""
+                COALESCE(CAST(target.{c} AS STRING),'')
+                <>
+                COALESCE(CAST(source.{c} AS STRING),'')
+                """
+                for c in change_columns
+            ]
+        )
+
+        # Expire current record
+        (
+            delta_table.alias("target")
+            .merge(
+                df.alias("source"),
+                merge_condition
+            )
+            .whenMatchedUpdate(
+                condition=change_condition,
+                set={
+                    current_col: "false",
+                    expiry_col: "date_sub(current_date(),1)"
+                }
+            )
+            .execute()
+        )
+
+        current_target = (
+            self.spark.table(table_name)
+            .filter(col(current_col) == True)
+        )
+
+        join_condition = [
+            df[k] == current_target[k]
+            for k in business_keys
+        ]
+
+        joined = (
+            df.alias("source")
+            .join(
+                current_target.alias("target"),
+                join_condition,
+                "left"
+            )
+        )
+
+        changed_condition = reduce(
+            lambda a, b: a | b,
+            [
+                col(f"target.{c}").isNull()
+                |
+                (
+                        col(f"source.{c}").cast("string")
+                        !=
+                        col(f"target.{c}").cast("string")
+                )
+                for c in change_columns
+            ]
+        )
+
+        rows_to_insert = (
+            joined
+            .filter(changed_condition)
+            .select("source.*")
+            .withColumn(
+                effective_col,
+                current_date()
+            )
+            .withColumn(
+                expiry_col,
+                lit(active_expiry).cast("date")
+            )
+            .withColumn(
+                current_col,
+                lit(True)
+            )
+        )
+
+        (
+            rows_to_insert.write
+            .format("delta")
+            .mode("append")
+            .saveAsTable(table_name)
         )

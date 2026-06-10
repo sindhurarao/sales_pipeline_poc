@@ -54,11 +54,21 @@
     "table": "dev.silver_dim_customer"
   },
   "write_options": {
-    "mode": "merge",
-    "mergeSchema": "true",
-    "mergeKeys": [
-      "customer_id"
-    ]
+    "mode": "scd2_merge",
+    "businessKeys": ["customer_id"],
+    "changeColumns": [
+      "customer_name",
+      "segment",
+      "country",
+      "region",
+      "state",
+      "city",
+      "postal_code"
+    ],
+    "effectiveDateColumn": "effective_date",
+    "expiryDateColumn": "expiry_date",
+    "currentFlagColumn": "current_flag",
+    "activeExpiryDate": "9999-12-31"
   },
   "audit": {
     "table": "dev.silver_ingestion_audit"

@@ -17,7 +17,7 @@
       "join_type": "left",
       "table": "dev.silver_dim_product",
       "alias": "p",
-      "condition": "o.product_id = p.product_id"
+      "condition": "o.product_id = p.product_id AND p.current_flag = true"
     }
   ],
   "validation": {

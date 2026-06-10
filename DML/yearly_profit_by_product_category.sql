@@ -1,7 +1,7 @@
 SELECT
     order_year,
-    category AS product_category,
-    SUM(profit) AS total_profit
-FROM dev.silver_sales
-GROUP BY order_year, category
-ORDER BY order_year, category;
+    product_category,
+    SUM(total_profit) AS total_profit
+FROM dev.gold.gold_profit_by_year_category_customer
+GROUP BY order_year, product_category
+ORDER BY order_year, product_category;

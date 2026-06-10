@@ -17,7 +17,10 @@ CREATE TABLE silver_sales
     sales_amount DOUBLE,
     discount DOUBLE,
     profit DOUBLE,
-    load_date DATE
+    load_date DATE,
+    effective_date DATE,
+    expiry_date DATE,
+    is_active BOOLEAN
 )
 USING DELTA
 PARTITIONED BY (order_year);

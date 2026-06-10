@@ -9,6 +9,7 @@ SELECT
     customer_name,
     SUM(profit) AS total_profit
 FROM silver_sales
+where is_active = true
 GROUP BY
     order_year,
     category,

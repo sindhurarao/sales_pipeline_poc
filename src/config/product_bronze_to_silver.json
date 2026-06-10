@@ -33,15 +33,38 @@
       "type": "rename",
       "source_column": "price_per_product",
       "target_column": "standard_price"
+    },
+    {
+      "type": "expression",
+      "target_column": "effective_date",
+      "expression": "current_date()"
+    },
+    {
+      "type": "expression",
+      "target_column": "expiry_date",
+      "expression": "CAST('9999-12-31' AS DATE)"
+    },
+    {
+      "type": "expression",
+      "target_column": "current_flag",
+      "expression": "true"
     }
   ],
   "target": {
     "table": "dev.silver_dim_product"
   },
   "write_options": {
-    "mode": "merge",
-    "mergeSchema": "true",
-    "mergeKeys": ["product_id"]
+    "mode": "scd2_merge",
+    "businessKeys": ["product_id"],
+    "changeColumns": [
+      "product_name",
+      "category",
+      "subcategory"
+    ],
+    "effectiveDateColumn": "effective_date",
+    "expiryDateColumn": "expiry_date",
+    "currentFlagColumn": "current_flag",
+    "activeExpiryDate": "9999-12-31"
   },
   "audit": {
     "table": "dev.silver.ingestion_audit"
