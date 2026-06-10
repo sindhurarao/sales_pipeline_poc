@@ -11,7 +11,7 @@
     "table": "dev.silver_ingestion_audit"
   },
   "format_options": {
-    "header": "true",
+    "headerRows": 1,
     "inferSchema": "true"
   },
   "write_options": {
