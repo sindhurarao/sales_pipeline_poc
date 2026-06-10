@@ -26,25 +26,19 @@ class DummyBronzeToSilverJob:
         self.config = config
 
 def test_read_source_from_table(mock_spark, table_ingestion_config):
-    job = DummyBronzeToSilverJob(mock_spark, table_ingestion_config)
-    bronze_to_silver.read_source(job)
+    bronze_to_silver.read_source(mock_spark, table_ingestion_config)
     mock_spark.table.assert_called_once_with("bronze_customers")
 
 def test_read_source_from_path(mock_spark, path_ingestion_config):
     reader = mock_spark.read
     reader.option.return_value = reader
     reader.format.return_value = reader
-    job = DummyBronzeToSilverJob(mock_spark, path_ingestion_config)
-    bronze_to_silver.read_source(job)
+    bronze_to_silver.read_source(mock_spark, path_ingestion_config)
     reader.option.assert_called_once_with("mergeSchema", "true")
     reader.format.assert_called_once_with("delta")
     reader.load.assert_called_once_with("/mnt/bronze/customers")
 
 
 def test_read_source_raises_for_invalid_ingestion_type(mock_spark):
-    job = DummyBronzeToSilverJob(
-        mock_spark,
-        {"ingestion_type": "bad", "source": {}},
-    )
     with pytest.raises(ValueError, match="Unsupported ingestion_type"):
-        bronze_to_silver.read_source(job)
+        bronze_to_silver.read_source(mock_spark,{"ingestion_type": "bad", "source": {}})

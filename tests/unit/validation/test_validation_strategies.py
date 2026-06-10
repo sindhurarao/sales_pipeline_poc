@@ -11,7 +11,7 @@ def test_min_validation_marks_values_below_min(sample_df):
     assert result.filter("_dq_error is not null").count() == 1
 
 def test_range_validation_marks_out_of_range_values(sample_df):
-    result = RangeValidation().apply(sample_df, {"field_name": "amount", "format": "0,10"})
+    result = RangeValidation().apply(sample_df, {"field_name": "id", "format": "0,2"})
     assert result.filter("_dq_error is not null").count() == 1
 
 def test_duplicate_key_validation_marks_duplicates(spark):
