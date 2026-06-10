@@ -1,5 +1,5 @@
 {
-  "ingestion_type": "auto_load",
+  "ingestion_type": "load_file",
   "source": {
     "path": "dbfs:/Volumes/sandbox/default/sales/orders.json",
     "format": "json"
