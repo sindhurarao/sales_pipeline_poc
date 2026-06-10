@@ -26,4 +26,4 @@ USING DELTA
 PARTITIONED BY (order_year);
 
 OPTIMIZE silver_sales
-ZORDER BY (order_year, customer_id, product_id);
+ZORDER BY (order_date, customer_id, product_id);

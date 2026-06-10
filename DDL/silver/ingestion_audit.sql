@@ -1,8 +1,8 @@
-CREATE TABLE ingestion_audit
+CREATE TABLE silver_ingestion_audit
 (
     run_id STRING,
-    Source STRING,
-    Target STRING,
+    source STRING,
+    target STRING,
     status STRING,
     start_time TIMESTAMP,
     end_time TIMESTAMP,
