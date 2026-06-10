@@ -1,5 +1,5 @@
 import sys
-sys.path.append("/Workspace/Repos//sales_pipeline_poc/src")
+sys.path.append("/Workspace/Users/sindhurarao06@gmail.com/sales_pipeline_poc/src")
 
 import json
 from ingestion.copy_into_bronze import run as copy_into
