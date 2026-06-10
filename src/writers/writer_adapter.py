@@ -54,8 +54,10 @@ class WriterAdapter:
         current_col = options.get("currentFlagColumn","current_flag")
         active_expiry = options.get("activeExpiryDate","9999-12-31")
 
+        #Load existing silver table
         delta_table = DeltaTable.forName(self.spark,table_name)
 
+        #Matches only the current active records
         merge_condition = " AND ".join(
             [
                 f"target.{k}=source.{k}"
@@ -64,6 +66,7 @@ class WriterAdapter:
             + [f"target.{current_col}=true"]
         )
 
+        #Detects only changed attributes in existing records
         change_condition = " OR ".join(
             [
                 f"""
@@ -75,7 +78,7 @@ class WriterAdapter:
             ]
         )
 
-        # Expire current record
+        # Expire old active records by setting flag false and merge existing active records
         (
             delta_table.alias("target")
             .merge(
@@ -92,11 +95,13 @@ class WriterAdapter:
             .execute()
         )
 
+        #Now load only active records from silver table
         current_target = (
             self.spark.table(table_name)
             .filter(col(current_col) == True)
         )
 
+        #Check if each incoming source has active target by joining source to active target on business keys
         join_condition = [
             df[k] == current_target[k]
             for k in business_keys
@@ -111,6 +116,7 @@ class WriterAdapter:
             )
         )
 
+        #Select rows that need insertion new business key or new values which are now active for which old was expired
         changed_condition = reduce(
             lambda a, b: a | b,
             [
@@ -125,6 +131,7 @@ class WriterAdapter:
             ]
         )
 
+        #Write selected rows to silver
         rows_to_insert = (
             joined
             .filter(changed_condition)

@@ -59,7 +59,8 @@
     "changeColumns": [
       "product_name",
       "category",
-      "subcategory"
+      "subcategory",
+      "standard_price"
     ],
     "effectiveDateColumn": "effective_date",
     "expiryDateColumn": "expiry_date",
