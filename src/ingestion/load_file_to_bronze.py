@@ -8,6 +8,7 @@ from writers.delta_writer import DeltaWriter
 from helpers.audit_helper import AuditLogger
 from helpers.validation_helper import ValidationHelper
 from helpers.metadata_helper import MetadataHelper
+from transformation.transformer import Transformer
 
 def run(spark, config, dbutils):
 
@@ -48,8 +49,14 @@ def run(spark, config, dbutils):
         )
 
         source_df = reader.read()
-        enriched_df = MetadataHelper.enrich(
+        transformer = Transformer()
+
+        transformed_df = transformer.apply(
             source_df,
+            config.get("transformations", [])
+        )
+        enriched_df = MetadataHelper.enrich(
+            transformed_df,
             metadata_config,
             run_id,
             source_path

@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS bronze_orders
 (
-    row_id STRING,
+    row_id LONG,
     order_id STRING,
     order_date STRING,
     ship_date STRING,
@@ -14,8 +14,7 @@ CREATE TABLE IF NOT EXISTS bronze_orders
     ingestion_timestamp TIMESTAMP,
     source_file_name STRING,
     load_date DATE,
-    run_id STRING,
-    _rescued_data STRING
+    run_id STRING
 )
 USING DELTA
 PARTITIONED BY (load_date);
