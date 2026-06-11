@@ -4,6 +4,9 @@
     "path": "dbfs:/Volumes/sandbox/default/sales/Orders.json",
     "format": "json"
   },
+  "format_options": {
+    "multiLine": "true"
+  },
   "target": {
     "table": "dev.bronze_orders"
   },
