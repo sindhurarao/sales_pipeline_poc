@@ -34,7 +34,7 @@
       "target_column": "sub_category"
     },
     {
-      "type": "cast",
+      "type": "try_cast",
       "datatype": "double",
       "target_column": "standard_price"
     },
@@ -52,12 +52,6 @@
       "type": "expression",
       "target_column": "current_flag",
       "expression": "true"
-    },
-    {
-      "type": "select",
-      "columns": [
-
-      ]
     }
   ],
   "target": {
