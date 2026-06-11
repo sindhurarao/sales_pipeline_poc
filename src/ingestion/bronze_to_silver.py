@@ -72,7 +72,7 @@ def run(spark, config):
     silver_df.write.format("delta").mode("append").saveAsTable(config['target']['table'])
 
     logger.info(f"Successfully written {silver_df.count()} records to "
-                f"{config['target']}")
+                f"{config['target']['table']}")
     auditor.log(
         run_id=f"{run_id}",
         source=config["source"]["table"],
