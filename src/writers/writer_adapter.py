@@ -109,10 +109,13 @@ class WriterAdapter:
         )
 
         #Check if each incoming source has active target by joining source to active target on business keys
-        join_condition = [
-            df[k] == current_target[k]
-            for k in business_keys
-        ]
+        join_condition = reduce(
+            lambda a, b: a & b,
+            [
+                col(f"source.{k}") == col(f"target.{k}")
+                for k in business_keys
+            ]
+        )
 
         self.logger.info(f"SCD2 Join condition: {join_condition}")
 
@@ -160,6 +163,8 @@ class WriterAdapter:
                 lit(True)
             )
         )
+
+        self.logger.info(f"Schema of dataframe to be merged: {rows_to_insert.printSchema()}")
 
         (
             rows_to_insert.write
