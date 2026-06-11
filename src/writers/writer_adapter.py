@@ -3,8 +3,9 @@ from pyspark.sql.functions import *
 from functools import reduce
 
 class WriterAdapter:
-    def __init__(self, spark):
+    def __init__(self, spark, logger):
         self.spark = spark
+        self.logger = logger
 
     def write_table(self, df, table_name, mode="append"):
         if df is not None:
@@ -33,6 +34,7 @@ class WriterAdapter:
             f"target.{key} = source.{key}"
             for key in merge_keys
         ])
+        self.logger.info(f"Merge condition: {condition}")
         (
             target.alias("target")
             .merge(df.alias("source"), condition)
@@ -67,6 +69,7 @@ class WriterAdapter:
             ]
             + [f"target.{current_col}=true"]
         )
+        self.logger.info(f"SCD2 Merge condition: {merge_condition}")
 
         #Detects only changed attributes in existing records
         change_condition = " OR ".join(
@@ -79,6 +82,8 @@ class WriterAdapter:
                 for c in change_columns
             ]
         )
+
+        self.logger.info(f"SCD2 Change condition: {change_condition}")
 
         # Expire old active records by setting flag false and merge existing active records
         (
@@ -109,6 +114,8 @@ class WriterAdapter:
             for k in business_keys
         ]
 
+        self.logger.info(f"SCD2 Join condition: {join_condition}")
+
         joined = (
             df.alias("source")
             .join(
@@ -132,6 +139,8 @@ class WriterAdapter:
                 for c in change_columns
             ]
         )
+
+        self.logger.info(f"SCD2 Changed condition: {changed_condition}")
 
         #Write selected rows to silver
         rows_to_insert = (

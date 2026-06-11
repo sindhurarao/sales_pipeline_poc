@@ -13,7 +13,7 @@ def run(spark, config):
     run_id = str(uuid.uuid4())
     start_time = datetime.now()
 
-    writer = WriterAdapter(spark)
+    writer = WriterAdapter(spark, logger)
     auditor = AuditLogger(spark, config["audit"]["table"])
 
     logger = logging.getLogger("auto_load_to_bronze")
