@@ -24,13 +24,20 @@ def run(spark, config):
         )
     logger.info(f"Run Id       : {run_id}")
 
-    bronze_df = apply_pre_processing(read_source(spark, config), config)
-    joined_df = JoinProcessor.apply(
-        bronze_df,
-        config.get("joins", [])
-    )
+    if config.get("pre_processing", {}) is not None:
+        bronze_df = apply_pre_processing(read_source(spark, config), config)
+    else:
+        bronze_df = read_source(spark, config)
 
-    transformed_df = Transformer().apply(joined_df,config.get("transformations", []))
+    if config.get("joins", []) is not None:
+        joined_df = JoinProcessor.apply( bronze_df, config.get("joins", []))
+    else:
+        joined_df = bronze_df
+
+    if config.get("transformations", []) is not None:
+        transformed_df = Transformer().apply(joined_df,config.get("transformations", []))
+    else:
+        transformed_df = joined_df
 
     if config["validation"]["enabled"]:
         rules_df = spark.table(config["validation"]["rules_table"])
