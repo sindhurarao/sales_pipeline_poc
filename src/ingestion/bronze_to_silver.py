@@ -69,7 +69,7 @@ def run(spark, config):
     logger.info(f"Silver DF Schema:")
     silver_df.printSchema()
 
-    target_writer.write(silver_df)
+    silver_df.write.format("delta").mode("append").saveAsTable(config['target']['table'])
 
     logger.info(f"Successfully written {silver_df.count()} records to "
                 f"{config['target']}")
