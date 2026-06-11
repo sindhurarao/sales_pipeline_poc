@@ -43,7 +43,7 @@ class WriterAdapter:
             .execute()
         )
 
-    def scd2_merge(spark, source_df, target_table, options):
+    def scd2_merge(self,source_df, target_table, options):
         business_keys = options["businessKeys"]
         change_columns = options["changeColumns"]
         effective_col = options.get("effectiveDateColumn", "effective_date")
@@ -65,7 +65,7 @@ class WriterAdapter:
             ]
         )
 
-        spark.sql(f"""
+        self.spark.sql(f"""
             MERGE INTO {target_table} AS target
             USING global_temp.source_view AS source
             ON {join_condition}
@@ -94,7 +94,7 @@ class WriterAdapter:
 
         business_key_null_check = f"target.{business_keys[0]} IS NULL"
 
-        spark.sql(f"""
+        self.spark.sql(f"""
             INSERT INTO {target_table} (
                 {", ".join(insert_columns)}
             )
