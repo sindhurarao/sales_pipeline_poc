@@ -29,6 +29,11 @@
       "target_column": "standard_price"
     },
     {
+      "type": "rename",
+      "source_column": "subcategory",
+      "target_column": "sub_category"
+    },
+    {
       "type": "cast",
       "datatype": "double",
       "target_column": "standard_price"
