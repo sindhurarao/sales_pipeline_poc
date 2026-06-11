@@ -44,12 +44,12 @@ class WriterAdapter:
         )
 
     def scd2_merge(spark, source_df, target_table, options):
-        business_keys = options["business_keys"]
-        change_columns = options["change_columns"]
-        effective_col = options.get("effective_date_column", "effective_date")
-        expiry_col = options.get("expiry_date_column", "expiry_date")
-        current_col = options.get("current_flag_column", "current_flag")
-        active_expiry = options.get("active_expiry_date", "9999-12-31")
+        business_keys = options["businessKeys"]
+        change_columns = options["changeColumns"]
+        effective_col = options.get("effectiveDateColumn", "effective_date")
+        expiry_col = options.get("expiryDateColumn", "expiry_date")
+        current_col = options.get("currentFlagColumn", "current_flag")
+        active_expiry = options.get("activeExpiryDate", "9999-12-31")
 
         source_df.createOrReplaceTempView("source_view")
 
