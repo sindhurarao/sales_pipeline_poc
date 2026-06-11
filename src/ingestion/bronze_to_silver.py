@@ -5,7 +5,7 @@ from helpers.pre_processor import apply_pre_processing
 from transformation.transformer import Transformer
 from cleanser.rule_driven_cleanser import RuleDrivenCleanser
 from validation.rule_validator import RuleValidator
-from writers.writer_adapter import WriterAdapter
+from writers.delta_writer import DeltaWriter
 from helpers.audit_helper import AuditLogger
 from transformation.join_processor import JoinProcessor
 
@@ -21,7 +21,9 @@ def run(spark, config):
             format="%(asctime)s %(levelname)s %(message)s"
         )
     logger.info(f"Run Id       : {run_id}")
-    writer = WriterAdapter(spark, logger)
+
+    target_writer = DeltaWriter(config["target"]["table"],config.get("write_options",{}))
+    quarantine_writer = DeltaWriter(config["validation"]["quarantine_table"],"append")
 
     if config.get("pre_processing") is not None:
         logger.info(f"Pre-processing as per {config.get("pre_processing")}")
@@ -47,11 +49,7 @@ def run(spark, config):
         silver_df, quarantine_df = RuleValidator().apply(cleansed_df, rules_df)
 
         if quarantine_df is not None:
-            writer.write_table(
-                quarantine_df,
-                config["validation"]["quarantine_table"],
-                mode="append"
-            )
+            quarantine_writer.write(quarantine_df)
 
             auditor.log(
                 run_id=f"{run_id}",
@@ -68,11 +66,7 @@ def run(spark, config):
     else:
         silver_df = transformed_df
 
-    writer.write(
-        silver_df,
-        config["target"],
-        config["write_options"]
-    )
+    target_writer.write(silver_df)
 
     logger.info(f"Successfully written {silver_df.count()} records to "
                 f"{config['target']}")
