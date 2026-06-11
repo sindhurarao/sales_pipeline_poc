@@ -67,7 +67,7 @@ def run(spark, config):
         silver_df = transformed_df
 
     logger.info(f"Silver DF Schema:")
-    silver_df.printSchem()
+    silver_df.printSchema()
 
     target_writer.write(silver_df)
 
