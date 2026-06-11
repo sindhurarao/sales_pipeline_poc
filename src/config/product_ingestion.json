@@ -47,9 +47,6 @@
       "target_column": "product_name"
     }
   ],
-  "write_options": {
-    "mergeSchema": "true"
-  },
   "metadata_columns": {
     "ingestion_timestamp": true,
     "source_file_name": true,

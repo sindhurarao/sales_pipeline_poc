@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS bronze_products
 (
     product_id STRING,
     category STRING,
-    subcategory STRING,
+    sub_category STRING,
     product_name STRING,
     state STRING,
     price_per_product DOUBLE,
