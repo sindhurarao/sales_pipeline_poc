@@ -52,6 +52,19 @@
       "type": "expression",
       "target_column": "current_flag",
       "expression": "true"
+    },
+    {
+      "type": "select",
+      "columns": [
+        "product_id",
+        "category",
+        "sub_category",
+        "product_name",
+        "standard_price",
+        "effective_date",
+        "expiry_date",
+        "current_flag"
+      ]
     }
   ],
   "target": {

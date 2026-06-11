@@ -2,7 +2,7 @@ CREATE TABLE silver_dim_product
 (
     product_id STRING,
     category STRING,
-    subcategory STRING,
+    sub_category STRING,
     product_name STRING,
     standard_price DOUBLE,
     effective_date DATE,
