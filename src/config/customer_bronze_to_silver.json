@@ -65,7 +65,7 @@
     "table": "dev.silver_dim_customer"
   },
   "write_options": {
-    "mode": "append"
+    "mergeSchema": "true"
   },
   "audit": {
     "table": "dev.silver_ingestion_audit"
