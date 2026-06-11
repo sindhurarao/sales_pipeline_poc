@@ -5,7 +5,7 @@ from writers.writer_adapter import WriterAdapter
 def test_writer_adapter_write_table_modes(mock_writer_chain, mock_spark,
                                           mode):
     df = type("MockedDf", (), {"write": mock_writer_chain})()
-    adapter = WriterAdapter(mock_spark)
+    adapter = WriterAdapter(mock_spark, None)
     adapter.write(df, {"table": "target_table"}, {"mode": mode})
     mock_writer_chain.mode.assert_called_once_with(mode)
     mock_writer_chain.format.assert_called_once_with("delta")
@@ -13,6 +13,6 @@ def test_writer_adapter_write_table_modes(mock_writer_chain, mock_spark,
 
 
 def test_writer_adapter_raises_for_bad_mode(mock_spark):
-    adapter = WriterAdapter(mock_spark)
+    adapter = WriterAdapter(mock_spark,None)
     with pytest.raises(ValueError, match="Unsupported write mode"):
         adapter.write(None, {"table": "target_table"}, {"mode": "bad"})

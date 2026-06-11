@@ -12,8 +12,6 @@ from transformation.join_processor import JoinProcessor
 def run(spark, config):
     run_id = str(uuid.uuid4())
     start_time = datetime.now()
-
-    writer = WriterAdapter(spark, logger)
     auditor = AuditLogger(spark, config["audit"]["table"])
 
     logger = logging.getLogger("auto_load_to_bronze")
@@ -23,6 +21,7 @@ def run(spark, config):
             format="%(asctime)s %(levelname)s %(message)s"
         )
     logger.info(f"Run Id       : {run_id}")
+    writer = WriterAdapter(spark, logger)
 
     if config.get("pre_processing") is not None:
         logger.info(f"Pre-processing as per {config.get("pre_processing")}")
