@@ -1,5 +1,6 @@
 from delta.tables import DeltaTable
 from pyspark.sql.functions import *
+from functools import reduce
 
 class WriterAdapter:
     def __init__(self, spark):
