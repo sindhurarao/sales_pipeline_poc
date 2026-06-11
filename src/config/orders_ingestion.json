@@ -1,7 +1,7 @@
 {
   "ingestion_type": "load_file",
   "source": {
-    "path": "dbfs:/Volumes/sandbox/default/sales/orders.json",
+    "path": "dbfs:/Volumes/sandbox/default/sales/Orders.json",
     "format": "json"
   },
   "target": {
