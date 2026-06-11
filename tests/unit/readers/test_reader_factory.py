@@ -1,4 +1,6 @@
 import pytest
+
+from readers.json_reader import JsonReader
 from readers.reader_factory import ReaderFactory
 from readers.csv_reader import CsvReader
 from readers.excel_reader import ExcelReader
@@ -10,6 +12,8 @@ from readers.excel_reader import ExcelReader
         ("CSV", CsvReader),
         ("excel", ExcelReader),
         ("EXCEL", ExcelReader),
+        ("JSON", JsonReader),
+        ("json",JsonReader)
     ],
 )
 def test_get_reader_supported_formats(mock_spark, file_format, expected_class):
@@ -23,4 +27,4 @@ def test_get_reader_supported_formats(mock_spark, file_format, expected_class):
 
 def test_get_reader_raises_for_unsupported_format(mock_spark):
     with pytest.raises(ValueError, match="Unsupported format"):
-        ReaderFactory.get_reader(mock_spark, "json", "/tmp/file")
+        ReaderFactory.get_reader(mock_spark, "txt", "/tmp/file")
