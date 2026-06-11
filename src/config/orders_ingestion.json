@@ -10,6 +10,43 @@
   "audit": {
     "table": "dev.silver_ingestion_audit"
   },
+  "transformations": [
+    {
+      "type": "rename",
+      "source_column": "Customer ID",
+      "target_column": "customer_id"
+    },
+    {
+      "type": "rename",
+      "source_column": "Order Date",
+      "target_column": "order_date"
+    },
+    {
+      "type": "rename",
+      "source_column": "Order ID",
+      "target_column": "order_id"
+    },
+    {
+      "type": "rename",
+      "source_column": "Ship Date",
+      "target_column": "ship_date"
+    },
+    {
+      "type": "rename",
+      "source_column": "Ship Mode",
+      "target_column": "ship_mode"
+    },
+    {
+      "type": "rename",
+      "source_column": "Product ID",
+      "target_column": "product_id"
+    },
+    {
+      "type": "rename",
+      "source_column": "Row ID",
+      "target_column": "row_id"
+    }
+  ],
   "write_options": {
     "mergeSchema": "true"
   },
