@@ -10,6 +10,8 @@ class DeltaWriter:
             .format("delta")
             .mode("append")
         )
-        for key, value in self.options.items():
-            writer = writer.option(key,value)
+
+        if self.options is not None:
+            for key, value in self.options.items():
+                writer = writer.option(key,value)
         writer.saveAsTable(self.target_table)

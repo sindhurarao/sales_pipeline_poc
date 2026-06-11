@@ -23,7 +23,7 @@ def run(spark, config):
     logger.info(f"Run Id       : {run_id}")
 
     target_writer = DeltaWriter(config["target"]["table"],config.get("write_options",{}))
-    quarantine_writer = DeltaWriter(config["validation"]["quarantine_table"],"append")
+    quarantine_writer = DeltaWriter(config["validation"]["quarantine_table"],{})
 
     if config.get("pre_processing") is not None:
         logger.info(f"Pre-processing as per {config.get("pre_processing")}")
