@@ -33,11 +33,12 @@ def run(spark, config):
         config.get("joins", [])
     )
 
+    transformed_df = transformer.apply(validated_df,config.get("transformations", []))
+
     if config["validation"]["enabled"]:
         rules_df = spark.table(config["validation"]["rules_table"])
-        cleansed_df = cleanser.apply(joined_df, rules_df)
-        validated_df, quarantine_df = validator.apply(cleansed_df, rules_df)
-        silver_df = transformer.apply(validated_df,config.get("transformations", []))
+        cleansed_df = cleanser.apply(transformed_df, rules_df)
+        silver_df, quarantine_df = validator.apply(cleansed_df, rules_df)
 
         if quarantine_df is not None:
             writer.write_table(
@@ -59,7 +60,7 @@ def run(spark, config):
                         f"{config['validation']['quarantine_table']}")
 
     else:
-        silver_df = transformer.apply(joined_df,config.get("transformations", []))
+        silver_df = transformed_df
 
     writer.write(
         silver_df,

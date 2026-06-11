@@ -4,16 +4,62 @@
     "path": "dbfs:/Volumes/sandbox/default/sales/Customer.xlsx",
     "format": "EXCEL"
   },
+  "format_options": {
+    "headerRows": 1,
+    "inferSchema": "true"
+  },
   "target": {
     "table": "dev.bronze_customers"
   },
   "audit": {
     "table": "dev.silver_ingestion_audit"
   },
-  "format_options": {
-    "headerRows": 1,
-    "inferSchema": "true"
-  },
+  "transformations": [
+    {
+      "type": "rename",
+      "source_column": "Price per product",
+      "target_column": "price_per_product"
+    },
+    {
+      "type": "rename",
+      "source_column": "Country",
+      "target_column": "country"
+    },
+    {
+      "type": "rename",
+      "source_column": "City",
+      "target_column": "city"
+    },
+    {
+      "type": "rename",
+      "source_column": "State",
+      "target_column": "state"
+    },
+    {
+      "type": "rename",
+      "source_column": "Postal Code",
+      "target_column": "postal_code"
+    },{
+      "type": "rename",
+      "source_column": "Region",
+      "target_column": "region"
+    },
+    {
+      "type": "rename",
+      "source_column": "Segment",
+      "target_column": "segment"
+    },
+    {
+      "type": "rename",
+      "source_column": "Customer ID",
+      "target_column": "customer_id"
+    },
+    {
+      "type": "rename",
+      "source_column": "Customer Name",
+      "target_column": "name"
+    }
+  ],
   "write_options": {
     "mergeSchema": "true"
   },

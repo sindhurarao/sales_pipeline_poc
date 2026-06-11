@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS bronze_orders
     ship_mode STRING,
     customer_id STRING,
     product_id STRING,
-    quantity INT,
+    quantity LONG,
     price DOUBLE,
     discount DOUBLE,
     profit DOUBLE,
@@ -16,8 +16,8 @@ CREATE TABLE IF NOT EXISTS bronze_orders
     load_date DATE,
     run_id STRING
 )
-USING DELTA
-PARTITIONED BY (load_date);
+    USING DELTA
+    PARTITIONED BY (load_date);
 
 OPTIMIZE bronze_orders
 ZORDER BY (order_id, customer_id, product_id);
