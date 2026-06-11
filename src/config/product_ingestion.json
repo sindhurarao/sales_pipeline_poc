@@ -12,7 +12,8 @@
   },
   "format_options": {
     "sheetName": "Products",
-    "headerRows": "1"
+    "header": "true",
+    "inferSchema": "true"
   },
   "transformations": [
     {
