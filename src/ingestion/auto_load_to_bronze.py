@@ -102,10 +102,6 @@ def run(spark, config, dbutils):
             "cloudFiles.schemaEvolutionMode",
             schema_evolution_mode
         )
-        .option(
-            "rescuedDataColumn",
-            "_rescued_data"
-        )
         .load(source_path)
     )
 

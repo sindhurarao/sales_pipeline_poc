@@ -1,11 +1,5 @@
 {
   "pre_processing": {
-    "freshness_check": {
-      "enabled": true,
-      "timestamp_column": "ingestion_timestamp",
-      "max_delay_hours": 24,
-      "fail_on_stale_data": true
-    },
     "deduplication": {
       "enabled": true,
       "keys": ["product_id"],
@@ -32,6 +26,11 @@
     {
       "type": "rename",
       "source_column": "price_per_product",
+      "target_column": "standard_price"
+    },
+    {
+      "type": "cast",
+      "datatype": "double",
       "target_column": "standard_price"
     },
     {

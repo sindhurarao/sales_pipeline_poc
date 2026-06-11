@@ -1,11 +1,5 @@
 {
   "pre_processing": {
-    "freshness_check": {
-      "enabled": true,
-      "timestamp_column": "ingestion_timestamp",
-      "max_delay_hours": 24,
-      "fail_on_stale_data": true
-    },
     "deduplication": {
       "enabled": true,
       "keys": ["customer_id"],
@@ -34,6 +28,7 @@
       "source_column": "name",
       "target_column": "customer_name"
     },
+
     {
       "type": "expression",
       "target_column": "effective_date",

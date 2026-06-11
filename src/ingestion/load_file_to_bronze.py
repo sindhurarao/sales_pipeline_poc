@@ -49,12 +49,7 @@ def run(spark, config, dbutils):
         )
 
         source_df = reader.read()
-        transformer = Transformer()
-
-        transformed_df = transformer.apply(
-            source_df,
-            config.get("transformations", [])
-        )
+        transformed_df = Transformer().apply(source_df,config.get("transformations", []))
         enriched_df = MetadataHelper.enrich(
             transformed_df,
             metadata_config,

@@ -1,11 +1,5 @@
 {
   "pre_processing": {
-    "freshness_check": {
-      "enabled": true,
-      "timestamp_column": "ingestion_timestamp",
-      "max_delay_hours": 24,
-      "fail_on_stale_data": true
-    },
     "deduplication": {
       "enabled": true,
       "keys": ["row_id"],
@@ -32,12 +26,12 @@
     {
       "type": "expression",
       "target_column": "order_date",
-      "expression": "to_date(order_date, 'd/M/yyyy')"
+      "expression": "to_date(order_date, 'dd/MM/yyyy')"
     },
     {
       "type": "expression",
       "target_column": "ship_date",
-      "expression": "to_date(ship_date, 'd/M/yyyy')"
+      "expression": "to_date(ship_date, 'dd/MM/yyyy')"
     },
     {
       "type": "expression",

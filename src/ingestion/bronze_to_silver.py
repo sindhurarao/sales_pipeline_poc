@@ -13,9 +13,6 @@ def run(spark, config):
     run_id = str(uuid.uuid4())
     start_time = datetime.now()
 
-    transformer = Transformer()
-    cleanser = RuleDrivenCleanser()
-    validator = RuleValidator()
     writer = WriterAdapter(spark)
     auditor = AuditLogger(spark, config["audit"]["table"])
 
@@ -33,12 +30,12 @@ def run(spark, config):
         config.get("joins", [])
     )
 
-    transformed_df = transformer.apply(validated_df,config.get("transformations", []))
+    transformed_df = Transformer().apply(joined_df,config.get("transformations", []))
 
     if config["validation"]["enabled"]:
         rules_df = spark.table(config["validation"]["rules_table"])
-        cleansed_df = cleanser.apply(transformed_df, rules_df)
-        silver_df, quarantine_df = validator.apply(cleansed_df, rules_df)
+        cleansed_df = RuleDrivenCleanser().apply(transformed_df, rules_df)
+        silver_df, quarantine_df = RuleValidator().apply(cleansed_df, rules_df)
 
         if quarantine_df is not None:
             writer.write_table(
