@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS bronze_products
     subcategory STRING,
     product_name STRING,
     state STRING,
-    price_per_product DOUBLE,
+    price_per_product STRING,
     ingestion_timestamp TIMESTAMP,
     source_file_name STRING,
     load_date DATE,
