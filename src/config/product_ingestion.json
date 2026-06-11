@@ -29,7 +29,7 @@
     {
       "type": "rename",
       "source_column": "Sub-Category",
-      "target_column": "sub_category"
+      "target_column": "subcategory"
     },
     {
       "type": "rename",
@@ -47,6 +47,9 @@
       "target_column": "product_name"
     }
   ],
+  "write_options": {
+    "mergeSchema": "true"
+  },
   "metadata_columns": {
     "ingestion_timestamp": true,
     "source_file_name": true,
