@@ -52,6 +52,12 @@
       "type": "expression",
       "target_column": "current_flag",
       "expression": "true"
+    },
+    {
+      "type": "select",
+      "columns": [
+
+      ]
     }
   ],
   "target": {

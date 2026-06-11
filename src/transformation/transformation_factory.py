@@ -8,7 +8,9 @@ class TransformationFactory:
         "drop": DropTransformation,
         "cast": CastTransformation,
         "literal": LiteralTransformation,
-        "round": RoundTransformation
+        "round": RoundTransformation,
+        "try_cast": TryCastTransformation,
+        "alias": AliasTransformation
     }
 
     @classmethod

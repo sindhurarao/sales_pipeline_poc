@@ -43,6 +43,22 @@
       "type": "expression",
       "target_column": "current_flag",
       "expression": "true"
+    },
+    {
+      "type": "select",
+      "columns": [
+        "customer_id",
+        "customer_name",
+        "segment",
+        "country",
+        "region",
+        "state",
+        "city",
+        "postal_code",
+        "effective_date",
+        "expiry_date",
+        "current_flag"
+      ]
     }
   ],
   "target": {

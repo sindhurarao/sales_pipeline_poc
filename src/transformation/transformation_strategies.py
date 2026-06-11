@@ -51,3 +51,19 @@ class RoundTransformation(TransformationStrategy):
                 int(transformation["scale"])
             )
         )
+
+class AliasTransformation(TransformationStrategy):
+    def apply(self, df, transformation):
+        return df.withColumn(
+            transformation["alias"],
+            F.col(transformation["source_column"])
+        )
+
+class TryCastTransformation(TransformationStrategy):
+    def apply(self, df, transformation):
+        target_column = transformation["target_column"]
+        datatype = transformation["datatype"]
+        return df.withColumn(
+            target_column,
+            F.expr(f"try_cast({target_column} AS {datatype})")
+        )

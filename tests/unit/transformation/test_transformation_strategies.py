@@ -50,3 +50,18 @@ def test_round_transformation(sample_df):
         {"target_column": "amount", "scale": 2},
     )
     assert result.orderBy("id").first()["amount"] == 10.13
+
+def test_alias_transformation(sample_df):
+    result = AliasTransformation().apply(
+        sample_df,
+        {"source_column": "name", "alias": "customer_name"},
+    )
+    assert "customer_name" in result.columns
+    assert "name" in result.columns
+
+def test_try_cast_transformation(sample_df):
+    result = TryCastTransformation().apply(
+        sample_df,
+        {"target_column": "id", "datatype": "string"},
+    )
+    assert dict(result.dtypes)["id"] == "string"
