@@ -43,122 +43,67 @@ class WriterAdapter:
             .execute()
         )
 
-    def scd2_merge(
-            self,
-            df,
-            table_name,
-            options
-    ):
+    def scd2_merge(spark, source_df, config):
 
-        business_keys = options["businessKeys"]
-        change_columns = options["changeColumns"]
+        target_table = config["target_table"]
+        business_keys = config["business_keys"]
+        change_columns = config["change_columns"]
+        effective_col = config.get("effective_date_column", "effective_date")
+        expiry_col = config.get("expiry_date_column", "expiry_date")
+        current_col = config.get("current_flag_column", "current_flag")
+        active_expiry = config.get("active_expiry_date", "9999-12-31")
 
-        effective_col = options.get("effectiveDateColumn","effective_date")
-        expiry_col = options.get("expiryDateColumn","expiry_date")
-        current_col = options.get("currentFlagColumn","current_flag")
-        active_expiry = options.get("activeExpiryDate","9999-12-31")
-
-        #Load existing silver table
-        delta_table = DeltaTable.forName(self.spark,table_name)
-
-        #Matches only the current active records
-        merge_condition = " AND ".join(
-            [
-                f"target.{k}=source.{k}"
-                for k in business_keys
-            ]
-            + [f"target.{current_col}=true"]
+        join_condition = " AND ".join(
+            [f"target.{key} = source.{key}" for key in business_keys]
+            + [f"target.{current_col} = true"]
         )
-        self.logger.info(f"SCD2 Merge condition: {merge_condition}")
 
-        #Detects only changed attributes in existing records
         change_condition = " OR ".join(
             [
-                f"""
-                COALESCE(CAST(target.{c} AS STRING),'')
-                <>
-                COALESCE(CAST(source.{c} AS STRING),'')
-                """
-                for c in change_columns
+                f"NOT (source.{col} <=> target.{col})"
+                for col in change_columns
             ]
         )
 
-        self.logger.info(f"SCD2 Change condition: {change_condition}")
+        spark.sql(f"""
+            MERGE INTO {target_table} AS target
+            USING {source_view} AS source
+            ON {join_condition}
+    
+            WHEN MATCHED AND ({change_condition})
+            THEN UPDATE SET
+                target.{current_col} = false,
+                target.{expiry_col} = date_sub(current_date(), 1)
+        """)
 
-        # Expire old active records by setting flag false and merge existing active records
-        (
-            delta_table.alias("target")
-            .merge(
-                df.alias("source"),
-                merge_condition
-            )
-            .whenMatchedUpdate(
-                condition=change_condition,
-                set={
-                    current_col: "false",
-                    expiry_col: "date_sub(current_date(),1)"
-                }
-            )
-            .execute()
+        source_columns = source_df.columns
+
+        insert_columns = (
+                source_columns
+                + [effective_col, expiry_col, current_col]
         )
 
-        #Now load only active records from silver table
-        current_target = (
-            self.spark.table(table_name)
-            .filter(col(current_col) == True)
+        insert_select = (
+                [f"source.{col}" for col in source_columns]
+                + [
+                    f"current_date() AS {effective_col}",
+                    f"DATE('{active_expiry}') AS {expiry_col}",
+                    f"true AS {current_col}",
+                ]
         )
 
-        #Check if each incoming source has active target by joining source to active target on business keys
-        joined = (
-            df.alias("source")
-            .join(
-                current_target.alias("target"),
-                on=business_keys,
-                how="left"
+        business_key_null_check = f"target.{business_keys[0]} IS NULL"
+
+        spark.sql(f"""
+            INSERT INTO {target_table} (
+                {", ".join(insert_columns)}
             )
-        )
-
-        #Select rows that need insertion new business key or new values which are now active for which old was expired
-        changed_condition = reduce(
-            lambda a, b: a | b,
-            [
-                col(f"target.{c}").isNull()
-                |
-                (
-                        col(f"source.{c}").cast("string")
-                        !=
-                        col(f"target.{c}").cast("string")
-                )
-                for c in change_columns
-            ]
-        )
-
-        self.logger.info(f"SCD2 Changed condition: {changed_condition}")
-
-        #Write selected rows to silver
-        rows_to_insert = (
-            joined
-            .filter(changed_condition)
-            .select("source.*")
-            .withColumn(
-                effective_col,
-                current_date()
-            )
-            .withColumn(
-                expiry_col,
-                lit(active_expiry).cast("date")
-            )
-            .withColumn(
-                current_col,
-                lit(True)
-            )
-        )
-
-        self.logger.info(f"Schema of dataframe to be merged: {rows_to_insert.printSchema()}")
-
-        (
-            rows_to_insert.write
-            .format("delta")
-            .mode("append")
-            .saveAsTable(table_name)
-        )
+            SELECT
+                {", ".join(insert_select)}
+            FROM {source_view} source
+            LEFT JOIN {target_table} target
+                ON {" AND ".join([f"source.{key} = target.{key}" for key in business_keys])}
+               AND target.{current_col} = true
+            WHERE {business_key_null_check}
+               OR {change_condition}
+        """)
