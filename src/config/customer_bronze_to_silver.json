@@ -19,8 +19,8 @@
   },
   "validation": {
     "enabled": true,
-    "rules_table": "silver.customer_rules",
-    "quarantine_table": "silver.customer_quarantine"
+    "rules_table": "silver_customer_rules",
+    "quarantine_table": "silver_customer_quarantine"
   },
   "transformations": [
     {

@@ -19,8 +19,8 @@
   },
   "validation": {
     "enabled": true,
-    "rules_table": "silver.product_rules",
-    "quarantine_table": "silver.product_quarantine"
+    "rules_table": "silver_product_rules",
+    "quarantine_table": "silver_product_quarantine"
   },
   "transformations": [
     {
@@ -67,6 +67,6 @@
     "activeExpiryDate": "9999-12-31"
   },
   "audit": {
-    "table": "dev.silver.ingestion_audit"
+    "table": "dev.silver_ingestion_audit"
   }
 }
