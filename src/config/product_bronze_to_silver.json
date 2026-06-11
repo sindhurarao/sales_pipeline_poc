@@ -58,18 +58,7 @@
     "table": "dev.silver_dim_product"
   },
   "write_options": {
-    "mode": "scd2_merge",
-    "businessKeys": ["product_id"],
-    "changeColumns": [
-      "product_name",
-      "category",
-      "subcategory",
-      "standard_price"
-    ],
-    "effectiveDateColumn": "effective_date",
-    "expiryDateColumn": "expiry_date",
-    "currentFlagColumn": "current_flag",
-    "activeExpiryDate": "9999-12-31"
+    "mode": "append"
   },
   "audit": {
     "table": "dev.silver_ingestion_audit"
