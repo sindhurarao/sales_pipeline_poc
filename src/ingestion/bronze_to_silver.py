@@ -24,21 +24,21 @@ def run(spark, config):
 
     writer = WriterAdapter(spark, logger)
 
-    if config["pre_processing"] is not None:
+    if config.get("pre_processing") is not None:
         logger.info("Pre-processing:")
         bronze_df = apply_pre_processing(read_source(spark, config), config)
     else:
         bronze_df = read_source(spark, config)
 
-    if config['joins'] is not None:
+    if config.get('joins') is not None:
         logger.info("Joining:")
-        joined_df = JoinProcessor.apply( bronze_df, config['joins'])
+        joined_df = JoinProcessor.apply( bronze_df, config.get('joins'))
     else:
         joined_df = bronze_df
 
-    if config['transforations'] is not None:
+    if config.get('transformations') is not None:
         logger.info("Transforming:")
-        transformed_df = Transformer().apply(joined_df,config['transforations'])
+        transformed_df = Transformer().apply(joined_df,config.get('transformations'))
     else:
         transformed_df = joined_df
 
