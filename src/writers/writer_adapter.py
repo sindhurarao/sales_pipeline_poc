@@ -27,7 +27,7 @@ class WriterAdapter:
             #     )
             # else:
             #     raise ValueError(f"Unsupported write mode: {write_mode}")
-            df.write.csv("dbfs:/Volumes/sandbox/default/sales/customer_test")
+            df.write.mode("overwrite").csv("dbfs:/Volumes/sandbox/default/sales/customer_test")
 
     def merge(self, df, table_name, merge_keys):
         target = DeltaTable.forName(self.spark, table_name)
