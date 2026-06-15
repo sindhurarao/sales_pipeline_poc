@@ -48,7 +48,7 @@ def run(spark, config):
         silver_df, quarantine_df = RuleValidator().apply(cleansed_df, rules_df)
 
         if quarantine_df is not None:
-            writer.write(quarantine_df,config["validation"]["quarantine_table"],None)
+            writer.write(quarantine_df,config["validation"]["quarantine_table"],[])
 
             auditor.log(
                 run_id=f"{run_id}",
