@@ -7,27 +7,22 @@ class WriterAdapter:
         self.spark = spark
         self.logger = logger
 
-    def write_table(self, df, table_name, mode="append"):
-        if df is not None:
-            df.write.mode(mode).format("delta").saveAsTable(table_name)
-
     def write(self, df, target, write_options):
         if df is not None:
-            mode = write_options.get("mode", "append")
-            if mode == "append":
-                df.write.mode("append").format("delta").saveAsTable(target["table"])
-            elif mode == "overwrite":
-                df.write.mode("overwrite").format("delta").saveAsTable(target["table"])
-            elif mode == "merge":
+            writer = df.write.format("delta")
+            write_mode = write_options.get("mode", "append")
+            if write_mode in ["append","overwrite"]:
+                writer.mode(write_mode).saveAsTable(target["table"])
+            elif write_mode == "merge":
                 self.merge(df, target["table"], write_options["mergeKeys"])
-            elif mode == "scd2_merge":
+            elif write_mode == "scd2_merge":
                 self.scd2_merge(
                     df,
                     target["table"],
                     write_options
                 )
             else:
-                raise ValueError(f"Unsupported write mode: {mode}")
+                raise ValueError(f"Unsupported write mode: {write_mode}")
 
     def merge(self, df, table_name, merge_keys):
         target = DeltaTable.forName(self.spark, table_name)

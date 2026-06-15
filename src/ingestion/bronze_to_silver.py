@@ -5,7 +5,7 @@ from helpers.pre_processor import apply_pre_processing
 from transformation.transformer import Transformer
 from cleanser.rule_driven_cleanser import RuleDrivenCleanser
 from validation.rule_validator import RuleValidator
-from writers.delta_writer import DeltaWriter
+from writers.writer_adapter import WriterAdapter
 from helpers.audit_helper import AuditLogger
 from transformation.join_processor import JoinProcessor
 
@@ -22,24 +22,23 @@ def run(spark, config):
         )
     logger.info(f"Run Id       : {run_id}")
 
-    target_writer = DeltaWriter(config["target"]["table"],config.get("write_options",{}))
-    quarantine_writer = DeltaWriter(config["validation"]["quarantine_table"],{})
+    writer = WriterAdapter(spark, logger)
 
-    if config.get("pre_processing") is not None:
-        logger.info(f"Pre-processing as per {config.get("pre_processing")}")
+    if config["pre_processing"] is not None:
+        logger.info("Pre-processing:")
         bronze_df = apply_pre_processing(read_source(spark, config), config)
     else:
         bronze_df = read_source(spark, config)
 
-    if config.get("joins") is not None:
-        logger.info(f"Joining as per {config.get("joins")}")
-        joined_df = JoinProcessor.apply( bronze_df, config.get("joins", []))
+    if config['joins'] is not None:
+        logger.info("Joining:")
+        joined_df = JoinProcessor.apply( bronze_df, config['joins'])
     else:
         joined_df = bronze_df
 
-    if config.get("transformations") is not None:
-        logger.info(f"Transforming as per {config.get("transformations")}")
-        transformed_df = Transformer().apply(joined_df,config.get("transformations", []))
+    if config['transforations'] is not None:
+        logger.info("Transforming:")
+        transformed_df = Transformer().apply(joined_df,config['transforations'])
     else:
         transformed_df = joined_df
 
@@ -49,7 +48,7 @@ def run(spark, config):
         silver_df, quarantine_df = RuleValidator().apply(cleansed_df, rules_df)
 
         if quarantine_df is not None:
-            quarantine_writer.write(quarantine_df)
+            writer.write(quarantine_df,config["validation"]["quarantine_table"],None)
 
             auditor.log(
                 run_id=f"{run_id}",
@@ -66,10 +65,11 @@ def run(spark, config):
     else:
         silver_df = transformed_df
 
-    logger.info(f"Silver DF Schema:")
-    silver_df.printSchema()
-
-    silver_df.write.format("delta").mode("append").saveAsTable(config['target']['table'])
+    writer.write(
+        silver_df,
+        config["target"],
+        config["write_options"]
+    )
 
     logger.info(f"Successfully written {silver_df.count()} records to "
                 f"{config['target']['table']}")
