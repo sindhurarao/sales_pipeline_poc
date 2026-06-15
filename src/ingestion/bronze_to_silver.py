@@ -27,6 +27,7 @@ def run(spark, config):
     if config.get("pre_processing") is not None:
         logger.info("Pre-processing:")
         bronze_df = apply_pre_processing(read_source(spark, config), config)
+        logger.info(f"Pre-processed : {bronze_df.count()} records")
     else:
         bronze_df = read_source(spark, config)
 
@@ -39,6 +40,7 @@ def run(spark, config):
     if config.get('transformations') is not None:
         logger.info("Transforming:")
         transformed_df = Transformer().apply(joined_df,config.get('transformations'))
+        logger.info(f"Transformed : {bronze_df.count()} records")
     else:
         transformed_df = joined_df
 
