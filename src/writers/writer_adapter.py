@@ -7,6 +7,10 @@ class WriterAdapter:
         self.spark = spark
         self.logger = logger
 
+    def write_table(self, df, table_name, mode="append"):
+        if df is not None:
+            df.write.mode(mode).format("delta").saveAsTable(table_name)
+
     def write(self, df, target, write_options):
         if df is not None:
             writer = df.write.format("delta")
