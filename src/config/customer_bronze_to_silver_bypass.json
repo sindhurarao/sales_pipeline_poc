@@ -62,7 +62,7 @@
     }
   ],
   "target": {
-    "table": "dev.silver_dim_customer"
+    "table": "dev.silver_dim_customer_bypass"
   },
   "write_options": {
     "mode": "overwrite"
