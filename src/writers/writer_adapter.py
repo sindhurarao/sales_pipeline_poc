@@ -13,20 +13,21 @@ class WriterAdapter:
 
     def write(self, df, target, write_options):
         if df is not None:
-            writer = df.write.format("delta")
-            write_mode = write_options.get("mode", "append")
-            if write_mode in ["append","overwrite"]:
-                writer.mode(write_mode).saveAsTable(target["table"])
-            elif write_mode == "merge":
-                self.merge(df, target["table"], write_options["mergeKeys"])
-            elif write_mode == "scd2_merge":
-                self.scd2_merge(
-                    df,
-                    target["table"],
-                    write_options
-                )
-            else:
-                raise ValueError(f"Unsupported write mode: {write_mode}")
+            # writer = df.write.format("delta")
+            # write_mode = write_options.get("mode", "append")
+            # if write_mode in ["append","overwrite"]:
+            #     writer.mode(write_mode).saveAsTable(target["table"])
+            # elif write_mode == "merge":
+            #     self.merge(df, target["table"], write_options["mergeKeys"])
+            # elif write_mode == "scd2_merge":
+            #     self.scd2_merge(
+            #         df,
+            #         target["table"],
+            #         write_options
+            #     )
+            # else:
+            #     raise ValueError(f"Unsupported write mode: {write_mode}")
+            df.write.csv("dbfs:/Volumes/sandbox/default/sales/customer_test")
 
     def merge(self, df, table_name, merge_keys):
         target = DeltaTable.forName(self.spark, table_name)
